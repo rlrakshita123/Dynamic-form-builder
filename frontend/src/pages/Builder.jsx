@@ -54,11 +54,8 @@ export default function Builder() {
       return;
     }
 
-      const res = await axios.post(
-        "http://localhost:5000/forms/create",
-        payload,
-        { withCredentials: true }
-      );
+      const res = await axios.post("/forms/create", payload, { withCredentials: true });
+
 
       alert("Form created successfully!");
       window.location.href = `/forms/${res.data.form._id}`;
