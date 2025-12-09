@@ -2,7 +2,7 @@
 import React from "react";
 
 export default function Landing() {
-  const oauthUrl = "http://localhost:5000/auth/google";
+  const oauthUrl = "https://dynamic-form-builder-0dnd.onrender.com/auth/google";
 
   return (
     <div style={{ padding: 40, color: "white", maxWidth: 900, margin: "0 auto" }}>
