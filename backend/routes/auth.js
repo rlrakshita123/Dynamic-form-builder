@@ -9,7 +9,7 @@ router.get("/google",
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/auth?error=login_failed",
+    failureRedirect: "https://dynamic-form-builder-rosy.vercel.app/auth?error=login_failed",
     session: true,
   }),
   (req, res) => {
@@ -17,7 +17,7 @@ router.get(
       httpOnly: true,
     });
 
-    res.redirect("http://localhost:5173/forms");
+    res.redirect("https://dynamic-form-builder-rosy.vercel.app/forms");
   }
 );
 

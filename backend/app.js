@@ -15,7 +15,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://dynamic-form-builder-rosy.vercel.app",
   credentials: true,
 }));
 app.use(cookieParser());
