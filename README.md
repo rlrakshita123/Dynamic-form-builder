@@ -110,7 +110,4 @@ Backend → Render
 
 Screenshots:
 
-![Airtable Row Screenshot](airtable.png)
-![Landing Page](landing.png)
-![Forms List Page](formsList.png)
-![Form Responses Page](form-responses.png)
+(https://github.com/rlrakshita123/tempAssignment/tree/main/screenshots)
