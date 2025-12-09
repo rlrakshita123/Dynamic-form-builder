@@ -36,44 +36,77 @@ AIRTABLE_API_KEY=
 
 AIRTABLE_API_URL=https://api.airtable.com/v0
 
+
+
 Setup Instructions:
+
 Backend:
+
 cd backend
+
 npm install
+
 npm run dev
 
+
+
 Frontend:
+
 cd frontend
+
 npm install
+
 npm run dev
+
+
 
 How to Run the Project:
 
 Start backend server
+
 Start frontend server
+
 Open browser and go to http://localhost:5173
 
 Login using Google
+
 Create a form and save it
+
 Fill the form
+
 View all submitted responses
+
+
 
 Data Model Explanation:
 
 Forms are stored with title, description, and list of fields such as text, number, email, dropdown, etc.
+
 Responses are stored with formId, timestamp, and actual user input values.
+
 Each response is also sent to Airtable, where a new row is automatically created in the selected table.
+
+
 
 Airtable Integration Explanation:
 
 Airtable is connected using an API Key.
+
 The backend fetches bases from Airtable’s REST API.
+
 Whenever a user submits a form, the backend sends the submission data to Airtable and creates a new row dynamically.
+
 This satisfies the external API integration requirement.
 
+
+
 Deployment:
+
 Frontend → Vercel
+
 Backend → Render
+
+
 
 Screenshots:
 
