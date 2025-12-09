@@ -21,12 +21,19 @@ Features Implemented:
 - Airtable API Integration (fetch list of bases and write form responses into Airtable)
 
 Environment Variables:
+
 PORT=
+
 MONGO_URI=
+
 FRONTEND_URL=http://localhost:5173
+
 GOOGLE_CLIENT_ID=
+
 GOOGLE_CLIENT_SECRET=
+
 AIRTABLE_API_KEY=
+
 AIRTABLE_API_URL=https://api.airtable.com/v0
 
 Setup Instructions:
