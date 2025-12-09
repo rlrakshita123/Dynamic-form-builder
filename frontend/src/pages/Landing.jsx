@@ -43,9 +43,7 @@ export default function Landing() {
         </button>
       </div>
 
-      <div style={{ marginTop: 24, color: "#bbb" }}>
-        <p style={{ margin: 0 }}>Don’t want Google? You can still use the existing email login on /auth page.</p>
-      </div>
+      
 
       <style>
         {`
