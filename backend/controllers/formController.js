@@ -1,7 +1,7 @@
 const Form = require("../models/Form");
 const { createAirtableTable } = require("../utils/airtable");
 
-const BASE_ID = "appmjDkbutzwE2M9O";
+const BASE_ID = process.env.AIRTABLE_BASE_ID; 
 
 exports.createForm = async (req, res) => {
   try {
