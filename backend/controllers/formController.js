@@ -20,7 +20,14 @@ exports.createForm = async (req, res) => {
 
     form = await form.save();
 
-    const airtableResponse = await createAirtableTable(BASE_ID, title, questions);
+    // const airtableResponse = await createAirtableTable(BASE_ID, title, questions);
+    const airtableTableName = `${title}_${Date.now()}`;
+
+    const airtableResponse = await createAirtableTable(
+      BASE_ID,
+      airtableTableName,
+      questions
+    );
 
     const tableId = airtableResponse.id;
     const airtableFields = airtableResponse.fields || [];
