@@ -15,6 +15,8 @@ router.get(
   (req, res) => {
     res.cookie("app_user_id", req.user._id.toString(), {
       httpOnly: true,
+      secure: true,     
+      sameSite: "none",
     });
 
     res.redirect("https://dynamic-form-builder-rosy.vercel.app/forms");
