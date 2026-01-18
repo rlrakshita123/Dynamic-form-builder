@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use("/testdb", testRoutes);   
 //app.use("/auth", authRoutes);
 app.use("/forms", formRoutes);
-app.use("/public/forms", publicFormRoutes);
+app.use("/public", publicFormRoutes);
 
 
 app.get("/", (req, res) => {

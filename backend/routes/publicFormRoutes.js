@@ -4,22 +4,19 @@ const formController = require("../controllers/formController");
 
 /*
   WHAT THIS FILE DOES:
-  1. Defines public (unauthenticated) routes for accessing forms.
-  2. Allows anyone to fetch a public form using a shareable slug.
-  3. Allows anonymous users to submit responses to public forms.
-  4. Keeps public routes separate from authenticated /forms routes.
+  1. Exposes public, unauthenticated form APIs.
+  2. Allows discovery of all public forms.
+  3. Allows public form viewing and submission.
+  4. Keeps public routes separate from private dashboard routes.
 */
 
-/**
- * GET /public/forms/:slug
- * Fetch a public form using its unique slug
- */
-router.get("/:slug", formController.getPublicForm);
+// List all public forms
+router.get("/forms", formController.getAllPublicForms);
 
-/**
- * POST /public/forms/:slug/responses
- * Submit a response to a public form (no login required)
- */
-router.post("/:slug/responses", formController.submitPublicResponse);
+// Get a single public form
+router.get("/forms/:slug", formController.getPublicForm);
+
+// Submit response to public form
+router.post("/forms/:slug/responses", formController.submitPublicResponse);
 
 module.exports = router;
