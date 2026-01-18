@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
 /*
   WHAT THIS FILE DOES:
   1. Fetches all publicly available forms from the backend.
-  2. Displays public forms in a clean card-based layout.
-  3. Allows unauthenticated users to open and fill public forms.
-  4. Acts as the discovery page for non-logged-in users.
+  2. Displays public forms in a clean, card-based layout.
+  3. Allows logged-out users to open and fill forms.
+  4. Acts as the discovery page for public forms.
 */
 
 export default function ExplorePublicForms() {
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPublicForms() {
@@ -20,7 +21,7 @@ export default function ExplorePublicForms() {
         const res = await axios.get("/public/forms");
         setForms(res.data.forms || []);
       } catch (err) {
-        console.error("Error fetching public forms:", err);
+        console.error("Failed to load public forms", err);
       } finally {
         setLoading(false);
       }
@@ -48,44 +49,42 @@ export default function ExplorePublicForms() {
       </div>
 
       {/* EMPTY STATE */}
-      {forms.length === 0 ? (
+      {forms.length === 0 && (
         <div className="card">
           <p className="page-subtitle">
-            No public forms available at the moment.
+            No public forms available right now.
           </p>
         </div>
-      ) : (
-        /* FORMS GRID */
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "24px",
-          }}
-        >
-          {forms.map((form) => (
-            <div key={form._id} className="card">
-              <h3 style={{ marginBottom: "8px" }}>{form.title}</h3>
-
-              {form.description && (
-                <p
-                  className="page-subtitle"
-                  style={{ marginBottom: "16px" }}
-                >
-                  {form.description}
-                </p>
-              )}
-
-              <Link
-                to={`/public/forms/${form.publicSlug}`}
-                className="btn btn-primary"
-              >
-                Fill Form
-              </Link>
-            </div>
-          ))}
-        </div>
       )}
+
+      {/* FORMS GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "24px",
+        }}
+      >
+        {forms.map((form) => (
+          <div key={form._id} className="card">
+            <h3 style={{ marginBottom: "8px" }}>{form.title}</h3>
+
+            <p className="page-subtitle" style={{ marginBottom: "16px" }}>
+              Created on{" "}
+              {new Date(form.createdAt).toLocaleDateString()}
+            </p>
+
+            <button
+              className="btn btn-primary"
+              onClick={() =>
+                navigate(`/public/forms/${form.publicSlug}`)
+              }
+            >
+              Fill Form
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

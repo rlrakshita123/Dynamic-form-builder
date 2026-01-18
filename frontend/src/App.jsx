@@ -10,6 +10,7 @@ import FormDetails from "./pages/FormDetails";
 import FormFill from "./pages/FormFill";
 import ResponsesList from "./pages/ResponsesList";
 import PublicFormFill from "./pages/PublicFormFill";
+import ExplorePublicForms from "./pages/ExplorePublicForms";
 
 /*
   WHAT THIS FILE DOES:
@@ -40,6 +41,7 @@ function App() {
             path="/forms/:formId/responses"
             element={<ResponsesList />}
           />
+          <Route path="/explore" element={<ExplorePublicForms />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
