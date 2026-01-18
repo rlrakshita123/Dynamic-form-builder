@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
-import { useNavigate } from "react-router-dom";
 
+/*
+  FormDetails Page Responsibilities:
+  1. Displays metadata and structure of a specific form.
+  2. Lists all questions configured within the form.
+  3. Provides navigation to fill the form or view responses.
+  4. Acts as a management overview for an individual form.
+*/
 
 export default function FormDetails() {
   const { formId } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [form, setForm] = useState(null);
 
   useEffect(() => {
     async function fetchForm() {
       try {
         const res = await axios.get(`/forms/${formId}`);
-        setForm(res.data.form);   
+        setForm(res.data.form);
       } catch (err) {
         console.error("Error loading form:", err);
       }
@@ -21,128 +27,78 @@ export default function FormDetails() {
     fetchForm();
   }, [formId]);
 
-  if (!form) return <h2>Loading...</h2>;
-  if (!form.questions) return <h2>No questions found</h2>;
+  if (!form) {
+    return (
+      <div className="container">
+        <p className="page-subtitle">Loading form details…</p>
+      </div>
+    );
+  }
+
+  if (!form.questions) {
+    return (
+      <div className="container">
+        <p className="page-subtitle">No questions found.</p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: 40, color: "white" }}>
-      <h1>{form.title}</h1>
-      <p><b>Base ID:</b> {form.baseId}</p>
-      <p><b>Table ID:</b> {form.tableId}</p>
+    <div className="container">
+      {/* HEADER */}
+      <div style={{ marginBottom: "24px" }}>
+        <h1 className="page-title">{form.title}</h1>
+        <p className="page-subtitle">
+          Base ID: {form.baseId} • Table ID: {form.tableId}
+        </p>
+      </div>
 
-      <h2>Questions</h2>
+      {/* QUESTIONS LIST */}
+      <div className="card" style={{ marginBottom: "24px" }}>
+        <h2 style={{ marginBottom: "16px" }}>Questions</h2>
 
-      <ul>
-        {form.questions.map((q, index) => (
-          <li key={index}>
-            <b>{q.label}</b> ({q.type})
-            {q.required ? " *required" : ""}
-          </li>
-        ))}
-      </ul>
+        <ul style={{ paddingLeft: "20px" }}>
+          {form.questions.map((q, index) => (
+            <li
+              key={index}
+              style={{
+                marginBottom: "8px",
+                color: "var(--text-secondary)",
+              }}
+            >
+              <strong style={{ color: "var(--text-primary)" }}>
+                {q.label}
+              </strong>{" "}
+              ({q.type})
+              {q.required && (
+                <span style={{ color: "var(--color-danger)" }}>
+                  {" "}
+                  *required
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <button
-      onClick={() => navigate(`/fill/${form._id}`)}
-      style={{
-        padding: "10px 20px",
-        background: "#4CAF50",
-        color: "white",
-        borderRadius: 6,
-        marginBottom: 20,
-      }}
-    >
-       Fill This Form
-    </button>
+      {/* ACTION BUTTONS */}
+      <div style={{ display: "flex", gap: "12px" }}>
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate(`/fill/${form._id}`)}
+        >
+          Fill This Form
+        </button>
 
-    <button
-      onClick={() => navigate(`/forms/${form._id}/responses`)}
-      style={{
-        padding: "10px 20px",
-        background: "#2196F3",
-        color: "white",
-        borderRadius: 6,
-        marginBottom: 20,
-        marginLeft: 10
-      }}
-    >
-      View Responses
-    </button>
-
-    <style>
-{`
-  body {
-    background: #111;
-    font-family: 'Inter', sans-serif;
-    color: #fff;
-  }
-
-  h1 {
-    font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  h2 {
-    font-size: 26px;
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: #ddd;
-  }
-
-  p, li {
-    font-size: 16px;
-    color: #ccc;
-  }
-
-  ul {
-    padding-left: 20px;
-    margin-bottom: 20px;
-  }
-
-  li {
-    margin-bottom: 8px;
-  }
-
-  
-  button {
-    cursor: pointer;
-    border: none;
-    font-size: 15px;
-    padding: 10px 20px;
-    transition: 0.2s ease;
-  }
-
-  button:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-  }
-
-  
-  button[style*="4CAF50"] {
-    background: #4CAF50 !important;
-    border-radius: 6px;
-  }
-
-  
-  button[style*="2196F3"] {
-    background: #2196F3 !important;
-    border-radius: 6px;
-  }
-
-  
-  div {
-    animation: fadeIn 0.5s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-`}
-</style>
-
-
-
+        <button
+          className="btn btn-secondary"
+          onClick={() =>
+            navigate(`/forms/${form._id}/responses`)
+          }
+        >
+          View Responses
+        </button>
+      </div>
     </div>
   );
 }

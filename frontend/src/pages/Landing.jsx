@@ -1,94 +1,100 @@
-
 import React from "react";
+
+/*
+  Landing Page Responsibilities:
+  1. Acts as the entry point and first impression of the application.
+  2. Presents the core value proposition of the FormForge platform.
+  3. Provides Google OAuth-based entry for login and registration.
+  4. Highlights key features like dynamic forms and Airtable integration.
+*/
 
 export default function Landing() {
   const oauthUrl = "https://dynamic-form-builder-0dnd.onrender.com/auth/google";
 
   return (
-    <div style={{ padding: 40, color: "white", maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 48, marginBottom: 8 }}>FormForge</h1>
-      <p style={{ fontSize: 18, marginBottom: 24 }}>
-        Create, share and analyze forms — auto-sync to Airtable.
-      </p>
+    <div className="container">
+      {/* HERO CARD */}
+      <div
+        className="card"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          maxWidth: "900px",
+          margin: "0 auto",
+        }}
+      >
+        <h1 className="page-title">FormForge</h1>
 
-      <div style={{ display: "flex", gap: 12 }}>
-        <button
-          onClick={() => (window.location.href = oauthUrl)}
-          style={{
-            padding: "12px 18px",
-            fontSize: 16,
-            borderRadius: 8,
-            cursor: "pointer",
-            background: "#4285F4",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Continue with Google
-        </button>
+        <p className="page-subtitle">
+          Create, share and analyze forms — auto-sync to Airtable.
+        </p>
 
-        <button
-          onClick={() => (window.location.href = oauthUrl)}
-          style={{
-            padding: "12px 18px",
-            fontSize: 16,
-            borderRadius: 8,
-            cursor: "pointer",
-            background: "#34A853",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Register with Google
-        </button>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <button
+            className="btn btn-primary"
+            onClick={() => (window.location.href = oauthUrl)}
+          >
+            Continue with Google
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={() => (window.location.href = oauthUrl)}
+          >
+            Register with Google
+          </button>
+        </div>
       </div>
 
-      
+      {/* FEATURES SECTION */}
+      <div
+        style={{
+          marginTop: "56px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "24px",
+          maxWidth: "1100px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <div className="card">
+          <h3 style={{ marginBottom: "10px" }}>🧩 Dynamic Form Builder</h3>
+          <p className="page-subtitle">
+            Build fully custom forms with text, number, dropdowns, and more —
+            without writing code.
+          </p>
+        </div>
 
-      <style>
-        {`
-          body {
-            background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
-            font-family: 'Inter', sans-serif;
-          }
+        <div className="card">
+          <h3 style={{ marginBottom: "10px" }}>🔐 Secure Authentication</h3>
+          <p className="page-subtitle">
+            Google OAuth-based login ensures secure and seamless user access.
+          </p>
+        </div>
 
-          h1 {
-            font-weight: 700;
-            letter-spacing: 1px;
-          }
+        <div className="card">
+          <h3 style={{ marginBottom: "10px" }}>📊 Airtable Integration</h3>
+          <p className="page-subtitle">
+            Automatically sync every form response to Airtable in real-time for
+            easy tracking and analysis.
+          </p>
+        </div>
+      </div>
 
-          p {
-            line-height: 1.5;
-          }
-
-          button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-            transition: 0.2s ease-in-out;
-          }
-
-          button:active {
-            transform: scale(0.97);
-          }
-
-          div {
-            animation: fadeIn 0.6s ease;
-          }
-
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}
-      </style>
-
-
-
+      {/* FOOTER NOTE */}
+      <div
+        style={{
+          marginTop: "72px",
+          textAlign: "center",
+          color: "var(--text-muted)",
+          fontSize: "14px",
+        }}
+      >
+        Full-stack Form Builder built with React, Node.js, MongoDB, and Airtable
+        API.
+      </div>
     </div>
-
-     
   );
 }
-
-
-
