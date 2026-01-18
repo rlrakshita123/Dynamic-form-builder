@@ -18,14 +18,17 @@ export default function Navbar() {
       });
   }, []);
 
-  const handleLogout = () => {
-    // backend-less logout (cookie expiry)
-    document.cookie =
-      "app_user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  const handleLogout = async () => {
+  try {
+    await axios.post("/auth/logout");
     setIsLoggedIn(false);
     navigate("/");
     window.location.reload();
-  };
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
+
 
   return (
     <nav

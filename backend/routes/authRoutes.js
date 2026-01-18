@@ -50,6 +50,17 @@ router.get("/me", async (req, res) => {
   });
 });
 
+router.post("/logout", (req, res) => {
+  req.logout(() => {
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid"); // passport session cookie
+      res.clearCookie("app_user_id"); // your custom cookie
+      res.json({ success: true });
+    });
+  });
+});
+
+
 
 
 
