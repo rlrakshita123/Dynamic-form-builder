@@ -181,3 +181,29 @@ exports.submitPublicResponse = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+/**
+ * Fetch all public forms for discovery (no auth required)
+ */
+exports.getAllPublicForms = async (req, res) => {
+  try {
+    const forms = await Form.find(
+      { isPublic: true },
+      {
+        title: 1,
+        description: 1,
+        publicSlug: 1,
+        createdAt: 1
+      }
+    ).sort({ createdAt: -1 });
+
+    return res.json({
+      success: true,
+      forms
+    });
+  } catch (err) {
+    console.error("Get public forms error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
