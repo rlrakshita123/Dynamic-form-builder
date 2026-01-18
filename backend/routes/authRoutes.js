@@ -28,20 +28,28 @@ router.post("/login", async (req, res) => {
 });
 
 // GET current authenticated user
-router.get("/me", (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    return res.json({
-      authenticated: true,
-      user: {
-        id: req.user._id,
-        name: req.user.displayName,
-        email: req.user.email,
-      },
-    });
+router.get("/me", async (req, res) => {
+  const userId = req.cookies.app_user_id;
+
+  if (!userId) {
+    return res.json({ authenticated: false });
   }
 
-  return res.json({ authenticated: false });
+  const user = await User.findById(userId).select("_id email");
+
+  if (!user) {
+    return res.json({ authenticated: false });
+  }
+
+  return res.json({
+    authenticated: true,
+    user: {
+      id: user._id,
+      email: user.email,
+    },
+  });
 });
+
 
 
 
