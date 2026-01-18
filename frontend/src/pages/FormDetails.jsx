@@ -3,23 +3,33 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
 /*
-  FormDetails Page Responsibilities:
-  1. Displays metadata and structure of a specific form.
-  2. Lists all questions configured within the form.
-  3. Provides navigation to fill the form or view responses.
-  4. Acts as a management overview for an individual form.
+  WHAT THIS FILE DOES:
+  1. Fetches and displays form metadata and question structure.
+  2. Allows form owner to generate a public shareable form link.
+  3. Displays and copies the public link once the form is public.
+  4. Provides navigation to fill form internally or view responses.
 */
 
 export default function FormDetails() {
   const { formId } = useParams();
   const navigate = useNavigate();
+
   const [form, setForm] = useState(null);
+  const [publicLink, setPublicLink] = useState("");
+  const [loadingLink, setLoadingLink] = useState(false);
 
   useEffect(() => {
     async function fetchForm() {
       try {
         const res = await axios.get(`/forms/${formId}`);
         setForm(res.data.form);
+
+        // If already public, build link
+        if (res.data.form.publicSlug) {
+          setPublicLink(
+            `${window.location.origin}/public/forms/${res.data.form.publicSlug}`
+          );
+        }
       } catch (err) {
         console.error("Error loading form:", err);
       }
@@ -27,18 +37,31 @@ export default function FormDetails() {
     fetchForm();
   }, [formId]);
 
+  const makeFormPublic = async () => {
+    try {
+      setLoadingLink(true);
+      const res = await axios.post(`/forms/${formId}/public`);
+      const slug = res.data.slug;
+
+      const link = `${window.location.origin}/public/forms/${slug}`;
+      setPublicLink(link);
+    } catch (err) {
+      console.error("Error making form public:", err);
+      alert("Failed to generate public link");
+    } finally {
+      setLoadingLink(false);
+    }
+  };
+
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(publicLink);
+    alert("Public link copied!");
+  };
+
   if (!form) {
     return (
       <div className="container">
         <p className="page-subtitle">Loading form details…</p>
-      </div>
-    );
-  }
-
-  if (!form.questions) {
-    return (
-      <div className="container">
-        <p className="page-subtitle">No questions found.</p>
       </div>
     );
   }
@@ -53,23 +76,13 @@ export default function FormDetails() {
         </p>
       </div>
 
-      {/* QUESTIONS LIST */}
+      {/* QUESTIONS */}
       <div className="card" style={{ marginBottom: "24px" }}>
         <h2 style={{ marginBottom: "16px" }}>Questions</h2>
-
         <ul style={{ paddingLeft: "20px" }}>
           {form.questions.map((q, index) => (
-            <li
-              key={index}
-              style={{
-                marginBottom: "8px",
-                color: "var(--text-secondary)",
-              }}
-            >
-              <strong style={{ color: "var(--text-primary)" }}>
-                {q.label}
-              </strong>{" "}
-              ({q.type})
+            <li key={index} style={{ marginBottom: "8px" }}>
+              <strong>{q.label}</strong> ({q.type})
               {q.required && (
                 <span style={{ color: "var(--color-danger)" }}>
                   {" "}
@@ -81,13 +94,43 @@ export default function FormDetails() {
         </ul>
       </div>
 
+      {/* PUBLIC LINK SECTION */}
+      <div className="card" style={{ marginBottom: "24px" }}>
+        <h3 style={{ marginBottom: "10px" }}>Public Share Link</h3>
+
+        {!publicLink ? (
+          <button
+            className="btn btn-primary"
+            onClick={makeFormPublic}
+            disabled={loadingLink}
+          >
+            {loadingLink ? "Generating..." : "Make Form Public"}
+          </button>
+        ) : (
+          <>
+            <input
+              className="input"
+              value={publicLink}
+              readOnly
+              style={{ marginBottom: "10px" }}
+            />
+            <button
+              className="btn btn-secondary"
+              onClick={copyLink}
+            >
+              Copy Link
+            </button>
+          </>
+        )}
+      </div>
+
       {/* ACTION BUTTONS */}
       <div style={{ display: "flex", gap: "12px" }}>
         <button
           className="btn btn-primary"
           onClick={() => navigate(`/fill/${form._id}`)}
         >
-          Fill This Form
+          Fill Internally
         </button>
 
         <button
