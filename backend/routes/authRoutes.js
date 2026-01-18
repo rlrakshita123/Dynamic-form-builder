@@ -27,4 +27,16 @@ router.post("/login", async (req, res) => {
   res.json({ message: "Login successful", user });
 });
 
+router.get("/me", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.json({
+      authenticated: true,
+      user: req.user
+    });
+  }
+
+  return res.json({ authenticated: false });
+});
+
+
 module.exports = router;

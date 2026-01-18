@@ -1,100 +1,56 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 /*
   WHAT THIS FILE DOES:
-  1. Renders a global, sticky navigation bar for all pages.
-  2. Shows public navigation (Explore Forms) for everyone.
-  3. Switches Login / Logout based on auth state.
-  4. Routes users correctly depending on login status.
+  1. Shows correct auth UI based on backend session.
+  2. Prevents false login/logout states.
+  3. Keeps navbar professional & stable.
+  4. Mirrors real SaaS behavior.
 */
 
 export default function Navbar() {
+  const { isLoggedIn, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🔐 TEMP auth check (cookie-based)
-  const isLoggedIn = document.cookie.includes("app_user_id");
-
   const handleLogout = async () => {
-    try {
-      // Proper backend logout
-      await fetch(
-        "https://dynamic-form-builder-0dnd.onrender.com/auth/logout",
-        { credentials: "include" }
-      );
-    } catch (e) {
-      console.error("Logout error", e);
-    } finally {
-      navigate("/");
-      window.location.reload();
-    }
+    await fetch(
+      "https://dynamic-form-builder-0dnd.onrender.com/auth/logout",
+      { credentials: "include" }
+    );
+    navigate("/");
+    window.location.reload();
   };
 
+  if (loading) return null; // prevent flicker
+
   return (
-    <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        width: "100%",
-        background: "var(--bg-primary)",
-        borderBottom: "1px solid var(--border-color)",
-        backdropFilter: "blur(8px)",
-      }}
-    >
-      <div
-        className="container"
-        style={{
-          height: "72px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        {/* LEFT: LOGO */}
+    <nav style={{
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+      background: "var(--bg-primary)",
+      borderBottom: "1px solid var(--border-color)"
+    }}>
+      <div className="container" style={{
+        height: "72px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}>
         <Link
           to={isLoggedIn ? "/forms" : "/"}
-          style={{
-            fontSize: "22px",
-            fontWeight: "800",
-            color: "var(--text-primary)",
-            textDecoration: "none",
-            letterSpacing: "0.4px",
-          }}
+          style={{ fontSize: "22px", fontWeight: 800 }}
         >
           FormForge
         </Link>
 
-        {/* CENTER: LINKS */}
         <div style={{ display: "flex", gap: "20px" }}>
-          <Link
-            to="/explore"
-            style={{
-              textDecoration: "none",
-              color: "var(--text-secondary)",
-              fontWeight:
-                location.pathname.startsWith("/explore") ? "600" : "400",
-            }}
-          >
-            Explore Forms
-          </Link>
-
-          {isLoggedIn && (
-            <Link
-              to="/forms"
-              style={{
-                textDecoration: "none",
-                color: "var(--text-secondary)",
-                fontWeight:
-                  location.pathname.startsWith("/forms") ? "600" : "400",
-              }}
-            >
-              Dashboard
-            </Link>
-          )}
+          <Link to="/explore">Explore Forms</Link>
+          {isLoggedIn && <Link to="/forms">Dashboard</Link>}
         </div>
 
-        {/* RIGHT: AUTH ACTION */}
         {!isLoggedIn ? (
           <a
             href="https://dynamic-form-builder-0dnd.onrender.com/auth/google"
@@ -103,10 +59,7 @@ export default function Navbar() {
             Continue with Google
           </a>
         ) : (
-          <button
-            className="btn btn-secondary"
-            onClick={handleLogout}
-          >
+          <button className="btn btn-secondary" onClick={handleLogout}>
             Logout
           </button>
         )}
