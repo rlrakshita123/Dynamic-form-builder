@@ -27,16 +27,22 @@ router.post("/login", async (req, res) => {
   res.json({ message: "Login successful", user });
 });
 
+// GET current authenticated user
 router.get("/me", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
     return res.json({
       authenticated: true,
-      user: req.user
+      user: {
+        id: req.user._id,
+        name: req.user.displayName,
+        email: req.user.email,
+      },
     });
   }
 
   return res.json({ authenticated: false });
 });
+
 
 
 module.exports = router;
