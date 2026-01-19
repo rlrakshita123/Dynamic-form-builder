@@ -51,14 +51,20 @@ router.get("/me", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  req.logout(() => {
-    req.session.destroy(() => {
-      res.clearCookie("connect.sid"); // passport session cookie
-      res.clearCookie("app_user_id"); // your custom cookie
-      res.json({ success: true });
+  try {
+    res.clearCookie("app_user_id", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
     });
-  });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("Logout error:", err);
+    return res.status(500).json({ success: false });
+  }
 });
+
 
 
 

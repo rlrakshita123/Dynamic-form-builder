@@ -2,33 +2,47 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "../utils/axios";
 
+/*
+  WHAT THIS FILE DOES:
+  1. Renders a global navigation bar across the app.
+  2. Determines login state using /auth/me (single source of truth).
+  3. Shows "Continue with Google" or "Logout" correctly.
+  4. Handles logout cleanly by clearing auth state and redirecting.
+*/
+
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading
 
+  // 🔐 Check auth status ONCE on mount
   useEffect(() => {
-    axios
-      .get("/auth/me")
-      .then((res) => {
-        setIsLoggedIn(res.data.authenticated);
-      })
-      .catch(() => {
-        setIsLoggedIn(false);
-      });
+    checkAuth();
   }, []);
 
-  const handleLogout = async () => {
-  try {
-    await axios.post("/auth/logout");
-    setIsLoggedIn(false);
-    navigate("/");
-    window.location.reload();
-  } catch (err) {
-    console.error("Logout failed", err);
-  }
-};
+  const checkAuth = async () => {
+    try {
+      const res = await axios.get("/auth/me");
+      setIsLoggedIn(res.data.authenticated);
+    } catch {
+      setIsLoggedIn(false);
+    }
+  };
 
+  // 🚪 Logout handler
+  const handleLogout = async () => {
+    try {
+      await axios.post("/auth/logout");
+
+      // IMPORTANT: update state AFTER backend clears cookie
+      setIsLoggedIn(false);
+
+      // redirect to landing
+      navigate("/");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   return (
     <nav
