@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
 /*
@@ -12,6 +12,7 @@ import axios from "../utils/axios";
 
 export default function FormFill() {
   const { formId } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState(null);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
@@ -51,82 +52,99 @@ export default function FormFill() {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
   };
 
-  const renderQuestion = (q) => {
-    if (!isVisible(q)) return null;
-
+  const renderQuestionInput = (q) => {
     const v = answers[q._id] ?? "";
 
     switch (q.type) {
       case "short_text":
         return (
           <input
-            className="input"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
+            placeholder="Type your answer..."
             value={v}
             onChange={(e) => handleChange(q._id, e.target.value)}
+            required={q.required}
           />
         );
 
       case "long_text":
         return (
           <textarea
-            className="input"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none transition-colors min-h-[100px]"
+            placeholder="Type your explanation..."
             value={v}
             onChange={(e) => handleChange(q._id, e.target.value)}
-            style={{ minHeight: "90px" }}
+            required={q.required}
           />
         );
 
       case "number":
         return (
           <input
-            className="input"
             type="number"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
+            placeholder="Enter a numeric value..."
             value={v}
             onChange={(e) => handleChange(q._id, e.target.value)}
+            required={q.required}
           />
         );
 
       case "radio":
-        return (q.options || []).map((opt) => (
-          <label key={opt} style={{ display: "block", marginBottom: "6px" }}>
-            <input
-              type="radio"
-              name={q._id}
-              checked={v === opt}
-              onChange={() => handleChange(q._id, opt)}
-            />{" "}
-            {opt}
-          </label>
-        ));
+        return (
+          <div className="space-y-2.5">
+            {(q.options || []).map((opt) => (
+              <label key={opt} className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer select-none">
+                <input
+                  type="radio"
+                  name={q._id}
+                  checked={v === opt}
+                  onChange={() => handleChange(q._id, opt)}
+                  className="bg-slate-950 border-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900"
+                  required={q.required && !v}
+                />
+                <span>{opt}</span>
+              </label>
+            ))}
+          </div>
+        );
 
       case "checkbox":
         const arr = Array.isArray(v) ? v : [];
-        return (q.options || []).map((opt) => (
-          <label key={opt} style={{ display: "block", marginBottom: "6px" }}>
-            <input
-              type="checkbox"
-              checked={arr.includes(opt)}
-              onChange={() => {
-                if (arr.includes(opt))
-                  handleChange(
-                    q._id,
-                    arr.filter((a) => a !== opt)
-                  );
-                else handleChange(q._id, [...arr, opt]);
-              }}
-            />{" "}
-            {opt}
-          </label>
-        ));
+        return (
+          <div className="space-y-2.5">
+            {(q.options || []).map((opt) => (
+              <label key={opt} className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={arr.includes(opt)}
+                  onChange={() => {
+                    if (arr.includes(opt)) {
+                      handleChange(
+                        q._id,
+                        arr.filter((a) => a !== opt)
+                      );
+                    } else {
+                      handleChange(q._id, [...arr, opt]);
+                    }
+                  }}
+                  className="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900"
+                />
+                <span>{opt}</span>
+              </label>
+            ))}
+          </div>
+        );
 
       case "dropdown":
         return (
           <select
-            className="input"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
             value={v}
             onChange={(e) => handleChange(q._id, e.target.value)}
+            required={q.required}
           >
-            <option value="">Choose...</option>
+            <option value="">Choose an option...</option>
             {(q.options || []).map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
@@ -135,12 +153,24 @@ export default function FormFill() {
           </select>
         );
 
+      case "date":
+        return (
+          <input
+            type="date"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
+            value={v}
+            onChange={(e) => handleChange(q._id, e.target.value)}
+            required={q.required}
+          />
+        );
+
       default:
         return (
           <input
-            className="input"
+            className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
             value={v}
             onChange={(e) => handleChange(q._id, e.target.value)}
+            required={q.required}
           />
         );
     }
@@ -161,7 +191,7 @@ export default function FormFill() {
       });
 
       alert("Thanks — your response is saved.");
-      window.location.href = `/forms/${formId}/responses`;
+      navigate(`/forms/${formId}/responses`);
       setAnswers({});
     } catch (err) {
       console.error("submit error", err);
@@ -171,53 +201,72 @@ export default function FormFill() {
     }
   };
 
-  if (loading) return <div className="container">Loading form…</div>;
-  if (!form) return <div className="container">Form not found.</div>;
+  if (loading) {
+    return (
+      <div className="max-w-xl mx-auto px-6 py-16 w-full space-y-6">
+        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-8 h-80 animate-pulse space-y-4">
+          <div className="h-6 w-1/3 bg-slate-800 rounded" />
+          <div className="h-4 w-2/3 bg-slate-800 rounded" />
+          <div className="h-10 w-full bg-slate-800 rounded mt-8" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!form) return <div className="max-w-xl mx-auto px-6 py-16 text-center text-slate-400">Form not found.</div>;
 
   return (
-    <div className="container" style={{ maxWidth: "800px" }}>
-      <div className="card">
-        <h2 className="page-title">{form.title}</h2>
-        {form.description && (
-          <p className="page-subtitle">{form.description}</p>
-        )}
+    <div className="max-w-2xl mx-auto px-6 py-12 w-full space-y-6 animate-fadeIn">
+      {/* Back button */}
+      <div>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-xs text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer"
+        >
+          ← Back
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit}>
-          {(form.questions || []).map((q) => (
-            <div key={q._id} style={{ marginBottom: "20px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontWeight: "600",
-                  marginBottom: "6px",
-                }}
-              >
-                {q.label}
-              </label>
+      <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 sm:p-8 space-y-8">
+        <div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">{form.title}</h2>
+          {form.description && (
+            <p className="text-sm text-slate-400 mt-2">{form.description}</p>
+          )}
+        </div>
 
-              {renderQuestion(q)}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {(form.questions || []).map((q) => {
+            // FIX: Wrap the entire question container in visibility check
+            if (!isVisible(q)) return null;
 
-              {q.hint && (
-                <div
-                  style={{
-                    fontSize: "12px",
-                    color: "var(--text-muted)",
-                    marginTop: "4px",
-                  }}
-                >
-                  {q.hint}
-                </div>
-              )}
-            </div>
-          ))}
+            return (
+              <div key={q._id} className="space-y-2 border-b border-slate-900 pb-6 last:border-b-0 last:pb-0">
+                <label className="block text-sm font-semibold text-slate-200">
+                  {q.label}{" "}
+                  {q.required && (
+                    <span className="text-rose-500 font-bold" title="Required">*</span>
+                  )}
+                </label>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={submitting}
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
+                {renderQuestionInput(q)}
+
+                {q.hint && (
+                  <p className="text-xs text-slate-500 italic mt-1">{q.hint}</p>
+                )}
+              </div>
+            );
+          })}
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98] w-full sm:w-auto cursor-pointer"
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Submit Response"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

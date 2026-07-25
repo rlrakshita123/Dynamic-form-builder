@@ -11,21 +11,17 @@ import Footer from "../components/Footer";
 
 export default function MainLayout({ children }) {
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
       {/* Global Navigation */}
       <Navbar />
 
       {/* Main Page Content */}
-      <main
-        style={{
-          minHeight: "calc(100vh - 140px)",
-        }}
-      >
+      <main className="flex-grow flex flex-col">
         {children}
       </main>
 
       {/* Global Footer */}
       <Footer />
-    </>
+    </div>
   );
 }

@@ -10,53 +10,33 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer
-      style={{
-        marginTop: "120px",
-        background: "var(--bg-primary)",
-        borderTop: "1px solid var(--border-color)",
-      }}
-    >
-      <div
-        className="container"
-        style={{
-          padding: "56px 0 32px",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "32px",
-        }}
-      >
+    <footer className="mt-auto bg-slate-950 border-t border-slate-900">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* BRAND / ABOUT */}
-        <div>
-          <h3 style={{ marginBottom: "12px" }}>FormForge</h3>
-          <p
-            style={{
-              fontSize: "14px",
-              color: "var(--text-secondary)",
-              lineHeight: "1.6",
-            }}
-          >
+        <div className="space-y-3">
+          <h3 className="text-lg font-bold text-slate-100">FormForge</h3>
+          <p className="text-sm text-slate-400 leading-relaxed">
             Build powerful, dynamic forms and sync responses directly to
             Airtable. Designed for speed, flexibility, and real-world workflows.
           </p>
         </div>
 
         {/* PRODUCT */}
-        <div>
-          <h4 style={{ marginBottom: "12px" }}>Product</h4>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Product</h4>
+          <ul className="space-y-2">
             <li>
-              <Link to="/explore" className="footer-link">
+              <Link to="/explore" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">
                 Explore Public Forms
               </Link>
             </li>
             <li>
-              <Link to="/" className="footer-link">
+              <Link to="/" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">
                 Create Forms
               </Link>
             </li>
             <li>
-              <span className="footer-link muted">
+              <span className="text-sm text-slate-600">
                 Airtable Sync
               </span>
             </li>
@@ -64,46 +44,32 @@ export default function Footer() {
         </div>
 
         {/* RESOURCES */}
-        <div>
-          <h4 style={{ marginBottom: "12px" }}>Resources</h4>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Resources</h4>
+          <ul className="space-y-2">
             <li>
-              <span className="footer-link muted">Documentation</span>
+              <span className="text-sm text-slate-600 cursor-not-allowed">Documentation</span>
             </li>
             <li>
-              <span className="footer-link muted">API Reference</span>
+              <span className="text-sm text-slate-600 cursor-not-allowed">API Reference</span>
             </li>
             <li>
-              <span className="footer-link muted">Support</span>
+              <span className="text-sm text-slate-600 cursor-not-allowed">Support</span>
             </li>
           </ul>
         </div>
 
         {/* TECH STACK */}
-        <div>
-          <h4 style={{ marginBottom: "12px" }}>Tech Stack</h4>
-          <p
-            style={{
-              fontSize: "14px",
-              color: "var(--text-secondary)",
-              lineHeight: "1.6",
-            }}
-          >
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Tech Stack</h4>
+          <p className="text-sm text-slate-400 leading-relaxed">
             React • Node.js • MongoDB • Airtable API • OAuth
           </p>
         </div>
       </div>
 
       {/* BOTTOM BAR */}
-      <div
-        style={{
-          borderTop: "1px solid var(--border-color)",
-          padding: "16px 0",
-          textAlign: "center",
-          fontSize: "13px",
-          color: "var(--text-muted)",
-        }}
-      >
+      <div className="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
         © {new Date().getFullYear()} FormForge · Built for real-world use
       </div>
     </footer>

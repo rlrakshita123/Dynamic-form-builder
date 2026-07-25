@@ -15,6 +15,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading
 
+  const apiBaseUrl = import.meta.env.VITE_Api_Url || "https://dynamic-form-builder-0dnd.onrender.com";
+  const googleAuthUrl = `${apiBaseUrl}/auth/google`;
+
   // 🔐 Check auth status ONCE on mount
   useEffect(() => {
     checkAuth();
@@ -44,49 +47,28 @@ export default function Navbar() {
     }
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav
-      style={{
-        width: "100%",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "var(--bg-primary)",
-        borderBottom: "1px solid var(--border-color)",
-      }}
-    >
-      <div
-        className="container"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: "72px",
-        }}
-      >
+    <nav className="sticky top-0 z-50 w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80">
+      <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
         {/* BRAND */}
         <Link
           to={isLoggedIn ? "/forms" : "/"}
-          style={{
-            fontSize: "22px",
-            fontWeight: "800",
-            color: "var(--text-primary)",
-            textDecoration: "none",
-          }}
+          className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 hover:opacity-90 transition-opacity"
         >
           FormForge
         </Link>
 
         {/* NAV LINKS */}
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div className="flex items-center gap-6">
           <Link
             to="/explore"
-            style={{
-              color: "var(--text-secondary)",
-              fontWeight:
-                location.pathname.startsWith("/explore") ? "600" : "400",
-              textDecoration: "none",
-            }}
+            className={`text-sm font-medium transition-colors hover:text-indigo-400 ${
+              location.pathname.startsWith("/explore")
+                ? "text-indigo-400"
+                : "text-slate-400"
+            }`}
           >
             Explore Forms
           </Link>
@@ -94,12 +76,11 @@ export default function Navbar() {
           {isLoggedIn && (
             <Link
               to="/forms"
-              style={{
-                color: "var(--text-secondary)",
-                fontWeight:
-                  location.pathname.startsWith("/forms") ? "600" : "400",
-                textDecoration: "none",
-              }}
+              className={`text-sm font-medium transition-colors hover:text-indigo-400 ${
+                location.pathname.startsWith("/forms") || location.pathname.startsWith("/builder")
+                  ? "text-indigo-400"
+                  : "text-slate-400"
+              }`}
             >
               Dashboard
             </Link>
@@ -107,16 +88,21 @@ export default function Navbar() {
         </div>
 
         {/* AUTH ACTION */}
-        <div>
-          {isLoggedIn === null ? null : !isLoggedIn ? (
+        <div className="flex items-center gap-3">
+          {isLoggedIn === null ? (
+            <div className="w-24 h-9 bg-slate-800 rounded-lg animate-pulse" />
+          ) : !isLoggedIn ? (
             <a
-              href="https://dynamic-form-builder-0dnd.onrender.com/auth/google"
-              className="btn btn-primary"
+              href={googleAuthUrl}
+              className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98] cursor-pointer"
             >
               Continue with Google
             </a>
           ) : (
-            <button className="btn btn-secondary" onClick={handleLogout}>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm border border-slate-800 hover:bg-slate-900 text-slate-300 rounded-lg font-medium transition-all active:scale-[0.98]"
+            >
               Logout
             </button>
           )}
