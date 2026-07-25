@@ -84,7 +84,10 @@ export default function Builder() {
         baseId: "base123",
         tableId: "tbl123",
         title,
-        questions,
+        questions: questions.map((q) => ({
+          ...q,
+          fieldId: q.fieldId || "temp_field_id",
+        })),
       };
 
       const res = await axios.post("/forms/create", payload, {
